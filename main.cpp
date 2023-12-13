@@ -13,9 +13,9 @@ int main()
     // RSA_algorithm rsa_algorithm;
     // rsa_algorithm.run_algorithm();
 
-    /************* RSA Auth ******************/
-    // RSA_Authentication *rsaAuthentication = new RSA_Authentication();
-    // rsaAuthentication->autheticate();
+    /************* RSA sign/verify ******************/
+    RSA_Authentication *rsaAuthentication = new RSA_Authentication();
+    rsaAuthentication->autheticate();
 
     return 0;
 }

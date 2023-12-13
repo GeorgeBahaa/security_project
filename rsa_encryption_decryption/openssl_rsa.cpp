@@ -7,19 +7,24 @@
 
 using namespace std;
 
+namespace project
+{
+    namespace rsa_enc_dec
+    {
 
-namespace project{
-    namespace rsa_enc_dec {
-
-        RSA *RSA_algorithm::create_RSA_BIO(RSA *keypair, int pem_type, const char *bio_name) {
+        RSA *RSA_algorithm::create_RSA_BIO(RSA *keypair, int pem_type, const char *bio_name)
+        {
             RSA *rsa = nullptr;
             BIO *bio = BIO_new_file(bio_name, "w+");
 
-            if (pem_type == PUBLIC_KEY_PEM) {
+            if (pem_type == PUBLIC_KEY_PEM)
+            {
                 PEM_write_bio_RSAPublicKey(bio, keypair);
                 BIO_reset(bio);
                 PEM_read_bio_RSAPublicKey(bio, &rsa, nullptr, nullptr);
-            } else if (pem_type == PRIVATE_KEY_PEM) {
+            }
+            else if (pem_type == PRIVATE_KEY_PEM)
+            {
                 PEM_write_bio_RSAPrivateKey(bio, keypair, nullptr, nullptr, 0, nullptr, nullptr);
                 BIO_reset(bio);
                 PEM_read_bio_RSAPrivateKey(bio, &rsa, nullptr, nullptr);
@@ -29,42 +34,50 @@ namespace project{
             return rsa;
         }
 
-        int RSA_algorithm::public_encrypt(int flen, unsigned char *from, unsigned char *to, RSA *key, int padding) {
+        int RSA_algorithm::public_encrypt(int flen, unsigned char *from, unsigned char *to, RSA *key, int padding)
+        {
 
             int result = RSA_public_encrypt(flen, from, to, key, padding);
             return result;
         }
 
-        int RSA_algorithm::private_decrypt(int flen, unsigned char *from, unsigned char *to, RSA *key, int padding) {
+        int RSA_algorithm::private_decrypt(int flen, unsigned char *from, unsigned char *to, RSA *key, int padding)
+        {
             int result = RSA_private_decrypt(flen, from, to, key, padding);
-            if (result == -1) {
+            if (result == -1)
+            {
                 // An error occurred during encryption
                 ERR_print_errors_fp(stderr);
             }
             return result;
         }
 
-
-        void RSA_algorithm::create_encrypted_file_BIO(char *encrypted, RSA *key_pair) {
+        void RSA_algorithm::create_encrypted_file_BIO(char *encrypted, RSA *key_pair)
+        {
             BIO *bio = BIO_new_file("encrypted_file.bin", "w");
             BIO_write(bio, encrypted, RSA_size(key_pair));
             BIO_free(bio);
         }
 
-        void RSA_algorithm::create_decrypted_file_BIO(char *decrypted, int decrypt_length) {
+        void RSA_algorithm::create_decrypted_file_BIO(char *decrypted, int decrypt_length)
+        {
             BIO *bio = BIO_new_file("decrypted_file.txt", "w");
 
-            if (bio) {
+            if (bio)
+            {
                 BIO_write(bio, decrypted, decrypt_length);
                 BIO_free(bio);
                 cout << "Decrypted file has been created." << endl;
-            } else {
+            }
+            else
+            {
                 // Handle error if BIO creation fails
                 cout << "Error creating BIO for writing decrypted file." << endl;
             }
         }
 
-        void RSA_algorithm::run_algorithm(void) {
+        void RSA_algorithm::run_algorithm(void)
+        {
             cout << "starting RSA algorithm ... " << endl;
 
             /* for storing key pairs*/
@@ -72,8 +85,8 @@ namespace project{
             RSA *public_key;
 
             /* calculating the size of the array in bytes,
-            * ensuring that the array is large enough to hold the plaintext data
-            * for encryption when the key size is specified in bits.*/
+             * ensuring that the array is large enough to hold the plaintext data
+             * for encryption when the key size is specified in bits.*/
             char message[KEY_SIZE / 8] = "hello message";
 
             /* pointers to ciphertext and decrypted text */
@@ -92,16 +105,17 @@ namespace project{
             cout << KEY_SIZE << endl;
             cout << PUBLIC_EXPONENT << endl;
 
-
             bigNum = BN_new();
             status = BN_set_word(bigNum, PUBLIC_EXPONENT);
-            if (status != 1) {
+            if (status != 1)
+            {
                 cout << "An error occurred in BN_set_word() method" << endl;
             }
 
             keypair = RSA_new();
             status = RSA_generate_key_ex(keypair, KEY_SIZE, bigNum, nullptr);
-            if (status != 1) {
+            if (status != 1)
+            {
                 cout << ("An error occurred in RSA_generate_key_ex() method");
             }
             cout << "key is generated" << endl;
@@ -112,11 +126,12 @@ namespace project{
             public_key = rsaAlgorithm->create_RSA_BIO(keypair, PUBLIC_KEY_PEM, public_key_pem);
             cout << "Public key pem file has been created." << endl;
 
-            encrypt = (char *) malloc(RSA_size(public_key));
-            int encrypt_length = rsaAlgorithm->public_encrypt(strlen(message) + 1, (unsigned char *) message,
-                                                              (unsigned char *) encrypt,
+            encrypt = (char *)malloc(RSA_size(public_key));
+            int encrypt_length = rsaAlgorithm->public_encrypt(strlen(message) + 1, (unsigned char *)message,
+                                                              (unsigned char *)encrypt,
                                                               public_key, RSA_PKCS1_OAEP_PADDING);
-            if (encrypt_length == -1) {
+            if (encrypt_length == -1)
+            {
                 cout << "An error occurred in public_encrypt() method" << endl;
             }
             cout << "Data is encrypted successfully!" << endl;
@@ -124,11 +139,12 @@ namespace project{
             rsaAlgorithm->create_encrypted_file_BIO(encrypt, public_key);
             cout << "encrypted_file.bin is created " << endl;
 
-            decrypt = (char *) malloc(encrypt_length);
-            int decrypt_length = rsaAlgorithm->private_decrypt(encrypt_length, (unsigned char *) encrypt,
-                                                               (unsigned char *) decrypt,
+            decrypt = (char *)malloc(encrypt_length);
+            int decrypt_length = rsaAlgorithm->private_decrypt(encrypt_length, (unsigned char *)encrypt,
+                                                               (unsigned char *)decrypt,
                                                                private_key, RSA_PKCS1_OAEP_PADDING);
-            if (decrypt_length == -1) {
+            if (decrypt_length == -1)
+            {
                 cout << "An error occurred in private_decrypt() method" << endl;
             }
             cout << "Data is decrypted successfully!" << endl;
@@ -142,7 +158,6 @@ namespace project{
             free(encrypt);
             free(decrypt);
             BN_free(bigNum);
-
         }
     }
 }

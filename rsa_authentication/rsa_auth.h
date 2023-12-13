@@ -6,10 +6,12 @@
 #include <openssl/bio.h>
 #include <string>
 
-
-namespace project {
-    namespace rsa_authentication {
-        class RSA_Authentication {
+namespace project
+{
+    namespace rsa_authentication
+    {
+        class RSA_Authentication
+        {
         public:
             RSA_Authentication();
 
