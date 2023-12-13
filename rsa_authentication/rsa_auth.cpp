@@ -6,6 +6,16 @@ namespace project
 {
     namespace rsa_authentication
     {
+        void RSA_Authentication::setMessageToSign(const std::string message)
+        {
+            this->messageToSign = message;
+        }
+
+        std::string RSA_Authentication::getMessageToSign()
+        {
+            return this->messageToSign;
+        }
+
         RSA_Authentication::RSA_Authentication() : rsaKeyPair(nullptr)
         {
             OpenSSL_add_all_algorithms();
@@ -156,9 +166,6 @@ namespace project
 
         void RSA_Authentication::autheticate(void)
         {
-
-            std::string messageToSign = "Hello, RSA!";
-
             // Generate RSA key pair
             this->generateKeyPair();
 

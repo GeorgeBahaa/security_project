@@ -2,6 +2,7 @@
 #define RSA_H
 
 #include <openssl/types.h>
+#include <string>
 
 #define KEY_SIZE 2048
 #define PUBLIC_EXPONENT 65537
@@ -15,8 +16,13 @@ namespace project
 
         class RSA_algorithm
         {
+        private:
+            char message[KEY_SIZE / 8];
 
         public:
+            void setMessage(const std::string& newMessage);
+
+            const char* getMessage();
             /**
              *This function essentially provides a way to write an RSA key to a BIO file and then read it back.
              * @param keypair  The input RSA keypair that you want to read or write.

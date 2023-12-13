@@ -40,8 +40,14 @@ namespace project
 
             void autheticate(void);
 
+            void setMessageToSign(std::string message);
+
+            std::string getMessageToSign();
+
         private:
             RSA *rsaKeyPair;
+
+            std::string messageToSign;
 
             // Helper function to free RSA key pair
             void freeKeyPair();

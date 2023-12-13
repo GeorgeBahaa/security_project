@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring> // for strcpy
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/err.h>
@@ -11,6 +12,20 @@ namespace project
 {
     namespace rsa_enc_dec
     {
+        // Setter
+        void RSA_algorithm::setMessage(const std::string& newMessage)
+        {
+            
+            // Make sure to copy the string into the array
+            std::strncpy(message, newMessage.c_str(), sizeof(message) - 1);
+            message[sizeof(message) - 1] = '\0'; // Null-terminate the string
+        }
+
+        // Getter
+        const char* RSA_algorithm::getMessage()
+        {
+            return message;
+        }
 
         RSA *RSA_algorithm::create_RSA_BIO(RSA *keypair, int pem_type, const char *bio_name)
         {
@@ -83,11 +98,6 @@ namespace project
             /* for storing key pairs*/
             RSA *private_key;
             RSA *public_key;
-
-            /* calculating the size of the array in bytes,
-             * ensuring that the array is large enough to hold the plaintext data
-             * for encryption when the key size is specified in bits.*/
-            char message[KEY_SIZE / 8] = "hello message";
 
             /* pointers to ciphertext and decrypted text */
             char *encrypt = nullptr;
