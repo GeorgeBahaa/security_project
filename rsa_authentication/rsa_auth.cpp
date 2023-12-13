@@ -243,14 +243,12 @@ namespace project
                 return;                      // Exit the program due to the error
             }
 
-            auto resultTuple = appendStrings(messageToSign, signature);
-
-            std::string appendedString = std::get<2>(resultTuple);
+            std::string appendedString = messageToSign + signature;
             
             //Encrypt and decrypt using AES
 
-            std::string originalString1 = std::get<0>(resultTuple);
-            std::string originalString2 = std::get<1>(resultTuple);
+            std::string originalString1 = appendedString.substr(0, messageToSign.length());
+            std::string originalString2 = appendedString.substr(messageToSign.length());
             if (this->loadPublicKey("public_key.pem"))
             {
                 // Call verifySignature using loaded public key

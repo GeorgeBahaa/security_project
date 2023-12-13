@@ -42,7 +42,7 @@ int main()
     /************* RSA sign/verify ******************/
     RSA_Authentication *rsaAuthentication = new RSA_Authentication();
     rsaAuthentication->setMessageToSign(message);
-    rsaAuthentication->autheticate();
+    // rsaAuthentication->autheticate();
     rsaAuthentication->rsa_conf_auth();
 
    return 0;
