@@ -5,18 +5,17 @@
 
 using namespace std;
 using namespace project::rsa_enc_dec;
-using namespace  project::rsa_authentication;
+using namespace project::rsa_authentication;
 
-int main() {
-/************** RSA enc/dec **************/
+int main()
+{
+    /************** RSA enc/dec **************/
     // RSA_algorithm rsa_algorithm;
     // rsa_algorithm.run_algorithm();
 
-
-/************* RSA Auth ******************/
-//    RSA_Authentication* rsaAuthentication = new  RSA_Authentication();
-//    rsaAuthentication->autheticate();
-
+    /************* RSA Auth ******************/
+    // RSA_Authentication *rsaAuthentication = new RSA_Authentication();
+    // rsaAuthentication->autheticate();
 
     return 0;
 }
