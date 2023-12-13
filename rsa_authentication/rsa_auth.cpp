@@ -1,6 +1,8 @@
 #include "rsa_auth.h"
 #include <openssl/err.h>
 #include <iostream>
+#include <string>
+#include <tuple>
 
 namespace project
 {
@@ -206,6 +208,66 @@ namespace project
             {
                 std::cerr << "Error loading public key." << std::endl;
             }
+        }
+
+        std::tuple<std::string, std::string, std::string> appendStrings(const std::string &str1, const std::string &str2)
+        {
+            std::string result = str1 + str2;
+            return std::make_tuple(str1, str2, result);
+        }
+
+        void RSA_Authentication::rsa_conf_auth(void)
+        {
+
+            // Generate RSA key pair
+            this->generateKeyPair();
+
+            // Save public key to file
+            this->savePublicKey("public_key.pem");
+
+            // Save private key to file
+            this->savePrivateKey("private_key.pem");
+
+            std::string signature = "";
+            // Load private key from file
+            if (this->loadPrivateKey("private_key.pem"))
+            {
+                std::cout << "Private key loaded successfully." << std::endl;
+                // Sign a message using the private key
+                signature = this->signMessage(messageToSign);
+            }
+            else
+            {
+                std::cerr << "Error loading private key." << std::endl;
+                ERR_print_errors_fp(stderr); // Print OpenSSL error stack
+                return;                      // Exit the program due to the error
+            }
+
+            auto resultTuple = appendStrings(messageToSign, signature);
+
+            std::string appendedString = std::get<2>(resultTuple);
+            
+            //Encrypt and decrypt using AES
+
+            std::string originalString1 = std::get<0>(resultTuple);
+            std::string originalString2 = std::get<1>(resultTuple);
+            if (this->loadPublicKey("public_key.pem"))
+            {
+                // Call verifySignature using loaded public key
+                if (this->verifySignature(originalString1, originalString2))
+                {
+                    std::cout << "Authentication successful!" << std::endl;
+                }
+                else
+                {
+                    std::cerr << "Authentication failed: Signature verification failed." << std::endl;
+                }
+            }
+            else
+            {
+                std::cerr << "Error loading public key." << std::endl;
+            }
+
         }
     }
 }

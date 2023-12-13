@@ -44,6 +44,8 @@ namespace project
 
             std::string getMessageToSign();
 
+            void rsa_conf_auth(void);
+
         private:
             RSA *rsaKeyPair;
 

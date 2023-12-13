@@ -35,14 +35,15 @@ int main()
     std::string message = read_message("E:/University/Semester 9/Computer and Network Security/Project/input.txt"); 
 
     /************** RSA enc/dec **************/
-    RSA_algorithm rsa_algorithm;
-    rsa_algorithm.setMessage(message);
-    rsa_algorithm.run_algorithm();
+    // RSA_algorithm rsa_algorithm;
+    // rsa_algorithm.setMessage(message);
+    // rsa_algorithm.run_algorithm();
 
     /************* RSA sign/verify ******************/
-    // RSA_Authentication *rsaAuthentication = new RSA_Authentication();
-    // rsaAuthentication->setMessageToSign(message);
-    // rsaAuthentication->autheticate();
+    RSA_Authentication *rsaAuthentication = new RSA_Authentication();
+    rsaAuthentication->setMessageToSign(message);
+    rsaAuthentication->autheticate();
+    rsaAuthentication->rsa_conf_auth();
 
-    return 0;
+   return 0;
 }
