@@ -112,7 +112,7 @@ namespace project
             unsigned char *signature = new unsigned char[RSA_size(rsaKeyPair)];
             unsigned int signatureLength;
 
-            RSA_sign(NID_sha256, reinterpret_cast<const unsigned char *>(message.c_str()), message.length(), signature,
+            RSA_sign(NID_sha512, reinterpret_cast<const unsigned char *>(message.c_str()), message.length(), signature,
                      &signatureLength, rsaKeyPair);
 
             std::string signatureStr(reinterpret_cast<char *>(signature), signatureLength);
@@ -131,7 +131,7 @@ namespace project
             }
 
             // Perform signature verification using the public key
-            int result = RSA_verify(NID_sha256,
+            int result = RSA_verify(NID_sha512,
                                     reinterpret_cast<const unsigned char *>(message.c_str()), message.length(),
                                     reinterpret_cast<const unsigned char *>(signature.c_str()), signature.length(),
                                     rsaKeyPair);
