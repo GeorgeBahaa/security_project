@@ -6,6 +6,9 @@
 #include <openssl/bio.h>
 #include <string>
 
+#define KEY_SIZE 2048
+#define HASH_SIZE 256
+
 namespace project
 {
     namespace rsa_authentication

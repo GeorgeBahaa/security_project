@@ -36,7 +36,7 @@ namespace project
             rsaKeyPair = RSA_new();
             BIGNUM *bne = BN_new();
             BN_set_word(bne, RSA_F4); // Set the public exponent to 65537
-            RSA_generate_key_ex(rsaKeyPair, 2048, bne, nullptr);
+            RSA_generate_key_ex(rsaKeyPair, KEY_SIZE, bne, nullptr);
             BN_free(bne);
         }
 
@@ -243,16 +243,16 @@ namespace project
                 return;                      // Exit the program due to the error
             }
 
-            std::string appendedString = messageToSign + signature;
+            std::string appendedString = signature + messageToSign;
             
             //Encrypt and decrypt using AES
-
-            std::string originalString1 = appendedString.substr(0, messageToSign.length());
-            std::string originalString2 = appendedString.substr(messageToSign.length());
+    
+            std::string newHash = appendedString.substr(0, HASH_SIZE);
+            std::string newMessage = appendedString.substr(HASH_SIZE);
             if (this->loadPublicKey("public_key.pem"))
             {
                 // Call verifySignature using loaded public key
-                if (this->verifySignature(originalString1, originalString2))
+                if (this->verifySignature(newMessage, newHash))
                 {
                     std::cout << "Authentication successful!" << std::endl;
                 }
