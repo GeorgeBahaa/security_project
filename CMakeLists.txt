@@ -9,7 +9,7 @@ include_directories("C:/Program Files/OpenSSL-Win64/include")
 link_directories("C:/Program Files/OpenSSL-Win64/bin")
 
 # Create an executable from your main.cpp file
-add_executable(project main.cpp rsa_encryption_decryption/openssl_rsa.cpp rsa_encryption_decryption/openssl_rsa.h rsa_authentication/rsa_auth.h rsa_authentication/rsa_auth.cpp)
+add_executable(project main.cpp rsa_encryption_decryption/openssl_rsa.cpp rsa_encryption_decryption/openssl_rsa.h rsa_authentication/rsa_auth.h rsa_authentication/rsa_auth.cpp aes_enc_dec/aes.h aes_enc_dec/aes.cpp)
 
 # Link against OpenSSL libraries
 target_link_libraries(project libssl-3-x64 libcrypto-3-x64)
