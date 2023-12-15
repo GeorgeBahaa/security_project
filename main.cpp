@@ -73,6 +73,4 @@ int main()
     cout << "Decrypted text: " << decryptedtext << endl;
 
     return 0;
-
-   return 0;
 }
