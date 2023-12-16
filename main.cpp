@@ -51,26 +51,24 @@ int main()
 
     /////////////////////////////////////////////////////
 
-    const char *key = "0123456789abcdef"; // 128-bit key
-    const char *plaintext = "Hello, OpenSSL!";
+    std::string plaintext = "This is a very large plaintext."; 
+    std::string key = "0123456789abcdef"; // 128-bit key
 
-    // AES operates on blocks of data, so we need to allocate space for the ciphertext
-    unsigned char ciphertext[AES_BLOCK_SIZE];
-    char decryptedtext[AES_BLOCK_SIZE];
+    // Encryption
+    std::vector<unsigned char> ciphertext;
+    project::aes::encrypt(plaintext, key, ciphertext);
 
-    // Encrypt
-    encrypt(plaintext, key, ciphertext);
-
-    // Decrypt
-    decrypt(ciphertext, key, decryptedtext);
-
-    cout << "Original text: " << plaintext << endl;
-    cout << "Encrypted text: ";
-    for (int i = 0; i < AES_BLOCK_SIZE; ++i) {
-        cout << hex << setw(2) << setfill('0') << static_cast<int>(ciphertext[i]);
+    std::cout << "Ciphertext: ";
+    for (const auto& byte : ciphertext) {
+        std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
     }
-    cout << endl;
-    cout << "Decrypted text: " << decryptedtext << endl;
+    std::cout << std::endl;
+
+    // Decryption
+    std::vector<char> decryptedtext;
+    project::aes::decrypt(ciphertext, key, decryptedtext);
+
+    std::cout << "Decrypted Text: " << std::string(decryptedtext.begin(), decryptedtext.end()) << std::endl;
 
     return 0;
 }
