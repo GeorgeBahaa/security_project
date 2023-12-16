@@ -5,15 +5,17 @@
 #include <openssl/rand.h>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <cstring>
 
 namespace project {
     namespace aes {
 
         void handleErrors();
-
-        void encrypt(const char *plaintext, const char *key, unsigned char *ciphertext);
-
-        void decrypt(const unsigned char *ciphertext, const char *key, char *decryptedtext);
+        
+        void encrypt(const std::string& plaintext, const std::string& key, std::vector<unsigned char>& ciphertext);
+        
+        void decrypt(const std::vector<unsigned char>& ciphertext, const std::string& key, std::vector<char>& decryptedtext);
 
     } // namespace aes
 } // namespace project
