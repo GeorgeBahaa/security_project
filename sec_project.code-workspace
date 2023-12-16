@@ -49,7 +49,11 @@
 			"xstring": "cpp",
 			"xtr1common": "cpp",
 			"xutility": "cpp",
-			"fstream": "cpp"
+			"fstream": "cpp",
+			"iomanip": "cpp",
+			"vector": "cpp",
+			"xlocmon": "cpp",
+			"xloctime": "cpp"
 		}
 	}
 }

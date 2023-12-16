@@ -93,7 +93,7 @@ namespace project
 
         void RSA_algorithm::run_algorithm(void)
         {
-            cout << "starting RSA algorithm ... " << endl;
+            //cout << "starting RSA algorithm ... " << endl;
 
             /* for storing key pairs*/
             RSA *private_key;
@@ -128,13 +128,13 @@ namespace project
             {
                 cout << ("An error occurred in RSA_generate_key_ex() method");
             }
-            cout << "key is generated" << endl;
+            //cout << "key is generated" << endl;
 
             private_key = rsaAlgorithm->create_RSA_BIO(keypair, PRIVATE_KEY_PEM, private_key_pem);
-            cout << "private_key.txt file is created." << endl;
+            //cout << "private_key.txt file is created." << endl;
 
             public_key = rsaAlgorithm->create_RSA_BIO(keypair, PUBLIC_KEY_PEM, public_key_pem);
-            cout << "Public key pem file has been created." << endl;
+            //cout << "Public key pem file has been created." << endl;
 
             encrypt = (char *)malloc(RSA_size(public_key));
             int encrypt_length = rsaAlgorithm->public_encrypt(strlen(message) + 1, (unsigned char *)message,
@@ -144,10 +144,10 @@ namespace project
             {
                 cout << "An error occurred in public_encrypt() method" << endl;
             }
-            cout << "Data is encrypted successfully!" << endl;
+            //cout << "Data is encrypted successfully!" << endl;
 
             rsaAlgorithm->create_encrypted_file_BIO(encrypt, public_key);
-            cout << "encrypted_file.bin is created " << endl;
+            //cout << "encrypted_file.bin is created " << endl;
 
             decrypt = (char *)malloc(encrypt_length);
             int decrypt_length = rsaAlgorithm->private_decrypt(encrypt_length, (unsigned char *)encrypt,
@@ -157,10 +157,12 @@ namespace project
             {
                 cout << "An error occurred in private_decrypt() method" << endl;
             }
-            cout << "Data is decrypted successfully!" << endl;
+            //cout << "Data is decrypted successfully!" << endl;
 
             rsaAlgorithm->create_decrypted_file_BIO(decrypt, decrypt_length);
-            cout << "decrypted_file.txt is created" << endl;
+            //cout << "decrypted_file.txt is created" << endl;
+
+            std::cout << "RSA done successfully." << std::endl;
 
             RSA_free(keypair);
             free(private_key);
@@ -168,6 +170,8 @@ namespace project
             free(encrypt);
             free(decrypt);
             BN_free(bigNum);
+
+            return;
         }
     }
 }

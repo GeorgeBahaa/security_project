@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <tuple>
+#include "../aes_enc_dec/aes.h"
 
 namespace project
 {
@@ -232,7 +233,7 @@ namespace project
             // Load private key from file
             if (this->loadPrivateKey("private_key.pem"))
             {
-                std::cout << "Private key loaded successfully." << std::endl;
+                //std::cout << "Private key loaded successfully." << std::endl;
                 // Sign a message using the private key
                 signature = this->signMessage(messageToSign);
             }
@@ -244,13 +245,20 @@ namespace project
             }
 
             std::string appendedString = signature + messageToSign;
-            
-            //Encrypt and decrypt using AES
-    
-            std::string newHash = appendedString.substr(0, HASH_SIZE);
-            std::string newMessage = appendedString.substr(HASH_SIZE);
+
+            // Encrypt and decrypt using AES
+            std::string key = "0123456789abcdef"; // 128-bit key
+            std::vector<unsigned char> ciphertext;
+            project::aes::encrypt(appendedString, key, ciphertext);
+            std::vector<char> decryptedtext;
+            project::aes::decrypt(ciphertext, key, decryptedtext);
+            std::string afterenc(decryptedtext.begin(), decryptedtext.end());
+
+            std::string newHash = afterenc.substr(0, HASH_SIZE);
+            std::string newMessage = afterenc.substr(HASH_SIZE);
             if (this->loadPublicKey("public_key.pem"))
             {
+                //std::cout << "Public key loaded successfully." << std::endl;
                 // Call verifySignature using loaded public key
                 if (this->verifySignature(newMessage, newHash))
                 {
@@ -265,7 +273,6 @@ namespace project
             {
                 std::cerr << "Error loading public key." << std::endl;
             }
-
         }
     }
 }

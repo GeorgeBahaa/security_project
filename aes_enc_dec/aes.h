@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <string>
 #include <cstring>
+#include <vector>
 
 namespace project {
     namespace aes {
@@ -16,6 +17,8 @@ namespace project {
         void encrypt(const std::string& plaintext, const std::string& key, std::vector<unsigned char>& ciphertext);
         
         void decrypt(const std::vector<unsigned char>& ciphertext, const std::string& key, std::vector<char>& decryptedtext);
+
+        void aes_go(std::string &plaintext);
 
     } // namespace aes
 } // namespace project
