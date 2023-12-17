@@ -1,4 +1,6 @@
 #include "aes.h"
+#include <fstream>
+#include <sstream>
 
 namespace project
 {
@@ -8,6 +10,43 @@ namespace project
         {
             std::cerr << "Error occurred." << std::endl;
             exit(EXIT_FAILURE);
+        }
+
+        void saveBinaryFile(const std::string &file_path, const std::string &data)
+        {
+            std::ofstream file(file_path, std::ios::binary);
+
+            if (file)
+            {
+                file.write(data.c_str(), data.size());
+                file.close();
+            }
+            else
+            {
+                std::cerr << "Error opening the file for writing: " << file_path << std::endl;
+            }
+        }
+
+        std::string readBinaryFile(const std::string &path)
+        {
+
+            // Open the file
+            std::ifstream inputFile(path, std::ios::binary);
+
+            if (inputFile)
+            {
+                // Read the entire file into a string
+                std::ostringstream content;
+                content << inputFile.rdbuf();
+                inputFile.close();
+
+                return content.str();
+            }
+            else
+            {
+                std::cerr << "Error opening the file: " << path << std::endl;
+                return ""; // Return an empty string if there's an error
+            }
         }
 
         // Padding function
@@ -61,6 +100,27 @@ namespace project
             decryptedtext.resize(decryptedtext.size() - paddingSize);
         }
 
+        void aes_enc(std::string &plaintext)
+        {
+            std::string key = "0123456789abcdef"; // 128-bit key
+
+            // Encryption
+            std::vector<unsigned char> ciphertext;
+            project::aes::encrypt(plaintext, key, ciphertext);
+
+            std::string encrypted_path = "aes_encrypted.bin";
+            std::string cipherString(ciphertext.begin(), ciphertext.end());
+
+            saveBinaryFile(encrypted_path, cipherString);
+
+            cout << "Data is encrypted successfully!" << endl;
+            cout << "aes_encrypted.bin is saved in build directory! \n"
+                 << endl;
+
+            cout << "AES Encryption done successfully.\n"
+                 << endl;
+        }
+
         void aes_go(std::string &plaintext)
         {
 
@@ -70,6 +130,14 @@ namespace project
             std::vector<unsigned char> ciphertext;
             project::aes::encrypt(plaintext, key, ciphertext);
 
+            cout << "Data is encrypted successfully!" << endl;
+            std::string encrypted_path = "aes_encrypted.bin";
+            std::string cipherString(ciphertext.begin(), ciphertext.end());
+
+            saveBinaryFile(encrypted_path, cipherString);
+            cout << "aes_encrypted.bin is saved in build directory! \n"
+                 << endl;
+
             // std::cout << "Ciphertext: ";
             // for (const auto &byte : ciphertext)
             // {
@@ -77,19 +145,29 @@ namespace project
             // }
             // std::cout << std::endl;
 
-            // Decryption
+            std::string encString = readBinaryFile(encrypted_path);
+            std::vector<unsigned char> readciphertext(encString.begin(), encString.end());
+
             std::vector<char> decryptedtext;
-            project::aes::decrypt(ciphertext, key, decryptedtext);
-            
-            std::string decText(decryptedtext.begin(), decryptedtext.end());
+            // Decryption
+            project::aes::decrypt(readciphertext, key, decryptedtext);
+            cout << "Data is decrypted successfully!" << endl;
+            std::string afterdec(decryptedtext.begin(), decryptedtext.end());
+
+            std::string decrypted_path = "aes_decrypted.txt";
+            saveBinaryFile(decrypted_path, afterdec);
+            cout << "aes_decrypted.txt is saved in build directory! \n"
+                 << endl;
 
             std::cout << "Encrypted Text: " << plaintext << std::endl;
-            std::cout << "Decrypted Text: " << decText << std::endl;
+            std::cout << "Decrypted Text: " << afterdec << std::endl;
 
-            if (plaintext == decText){
-                std::cout << "AES done successfully." << std::endl;
+            if (plaintext == afterdec)
+            {
+
+                cout << "\nAES Encryption/Decryption done successfully.\n"
+                     << endl;
             }
-
         }
     }
 }

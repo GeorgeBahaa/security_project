@@ -48,6 +48,10 @@ namespace project
             std::string getMessageToSign();
 
             void rsa_conf_auth(void);
+            void saveBinaryFile(const std::string &file_path, const std::string &data);
+            std::string readBinaryFile(const std::string &path);
+            void sign(void);
+            void sign_enc(void);
 
         private:
             RSA *rsaKeyPair;

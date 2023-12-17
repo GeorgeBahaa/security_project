@@ -85,6 +85,7 @@ namespace project
              */
 
             void run_algorithm(void);
+            void encrypt(void);
         };
     }
 }

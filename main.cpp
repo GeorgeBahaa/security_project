@@ -2,6 +2,7 @@
 #include "rsa_authentication/rsa_auth.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <openssl/err.h>
 #include "aes_enc_dec/aes.h"
@@ -11,48 +12,213 @@ using namespace project::rsa_enc_dec;
 using namespace project::rsa_authentication;
 using namespace project::aes;
 
-std::string read_message(std::string path)
+typedef enum
+{
+    AES = 1,
+    RSA_ENC,
+    RSA_SIGN,
+    RSA_ENC_SIGN
+} operation;
+
+std::string read_message(const std::string &path)
 {
 
     // Open the file
-    std::ifstream inputFile(path);
+    std::ifstream inputFile(path, std::ios::binary);
 
-    // Check if the file is open
-    if (!inputFile.is_open())
+    if (inputFile)
     {
-        std::cerr << "Error opening file: " << path << std::endl;
-        return "ERROR";
+        // Read the entire file into a string
+        std::ostringstream content;
+        content << inputFile.rdbuf();
+        inputFile.close();
+
+        return content.str();
     }
-
-    // Read the string from the file
-    std::string message;
-    std::getline(inputFile, message);
-
-    // Close the file
-    inputFile.close();
-
-    return message;
+    else
+    {
+        std::cerr << "Error opening the file: " << path << std::endl;
+        return ""; // Return an empty string if there's an error
+    }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    std::string message = read_message("E:/University/Semester 9/Computer and Network Security/Project/input.txt");
+    if (argc != 2)
+    {
+        std::cerr << "Please enter the path as first argument\n"
+                  << "In format of: .\\project.exe \"path\""
+                  << std::endl;
 
-    /************** AES enc/dec **************/
-    aes_go(message);
-    std::cout << std::endl;
+        return 1; // Exit with an error code
+    }
+    int x;
 
-    /************** RSA enc/dec **************/
-    // RSA_algorithm rsa_algorithm;
-    // rsa_algorithm.setMessage(message);
-    // rsa_algorithm.run_algorithm();
+    std::string file_path = argv[1];
+    std::string message = read_message(file_path);
+    std::cout << message << std::endl;
 
-    /************* RSA sign/verify ******************/
-    RSA_Authentication *rsaAuthentication = new RSA_Authentication();
-    rsaAuthentication->setMessageToSign(message);
-    // rsaAuthentication->autheticate();
-    rsaAuthentication->rsa_conf_auth();
+    while (1)
+    {
+        std::cout << "\n[1] AES Encryption/Decryption\n"
+                  << "[2] RSA Encryption/Decryption\n"
+                  << "[3] RSA sign/verify\n"
+                  << "[4] Confidentiality and Authentication\n\n"
+                  << std::endl;
+        do
+        {
+            std::cout << "Please choose operation \n";
+            std::cin >> x;
+            std::cout << std::endl;
+        } while (x > 4 || x < 1);
 
+        switch (x)
+        {
+        case AES:
+        {
+            /************** AES enc/dec **************/
+            std::cout << "\n[1] Encrypt\n"
+                      << "[2] Encrypt/Decrypt\n\n"
+                      << std::endl;
+            do
+            {
+                std::cout << "Please choose operation \n";
+                std::cin >> x;
+                std::cout << std::endl;
+            } while (x > 2 || x < 1);
 
+             switch (x)
+            {
+            case 1:
+            {
+                aes_enc(message);
+                break;
+            }
+            case 2:
+            {
+                aes_go(message);
+                break;
+            }
+            default:
+                break;
+            }
+            break;
+        }
+        case RSA_ENC:
+        {
+            /************** RSA enc/dec **************/
+            std::cout << "\n[1] Encrypt\n"
+                      << "[2] Encrypt/Decrypt\n\n"
+                      << std::endl;
+            do
+            {
+                std::cout << "Please choose operation \n";
+                std::cin >> x;
+                std::cout << std::endl;
+            } while (x > 2 || x < 1);
+
+            RSA_algorithm rsa_algorithm;
+            rsa_algorithm.setMessage(message);
+            switch (x)
+            {
+            case 1:
+            {
+                rsa_algorithm.encrypt();
+                break;
+            }
+            case 2:
+            {
+                rsa_algorithm.run_algorithm();
+                break;
+            }
+            default:
+                break;
+            }
+
+            break;
+        }
+        case RSA_SIGN:
+        {
+            /************* RSA sign/verify ******************/
+            std::cout << "\n[1] Sign\n"
+                      << "[2] Sign/Verify\n\n"
+                      << std::endl;
+            do
+            {
+                std::cout << "Please choose operation \n";
+                std::cin >> x;
+                std::cout << std::endl;
+            } while (x > 2 || x < 1);
+
+            RSA_Authentication *rsaAuthentication = new RSA_Authentication();
+            rsaAuthentication->setMessageToSign(message);
+
+            switch (x)
+            {
+            case 1:
+            {
+                rsaAuthentication->sign();
+                break;
+            }
+
+            case 2:
+            {
+                rsaAuthentication->autheticate();
+                break;
+            }
+
+            default:
+                break;
+            }
+
+            break;
+        }
+        case RSA_ENC_SIGN:
+        {
+            /************* RSA sign/verify ******************/
+            std::cout << "\n[1] Sign\n"
+                      << "[2] Sign + Encrypt\n"
+                      << "[3] Sign + Encrypt/Decrypt + Verify\n\n"
+                      << std::endl;
+            do
+            {
+                std::cout << "Please choose operation \n";
+                std::cin >> x;
+                std::cout << std::endl;
+            } while (x > 3 || x < 1);
+
+            RSA_Authentication *rsaAuthentication = new RSA_Authentication();
+            rsaAuthentication->setMessageToSign(message);
+
+            switch (x)
+            {
+            case 1:
+            {
+                rsaAuthentication->sign();
+                break;
+            }
+
+            case 2:
+            {
+                rsaAuthentication->sign_enc();
+                break;
+            }
+
+            case 3:
+            {
+                rsaAuthentication->rsa_conf_auth();
+                break;
+            }
+
+            default:
+                break;
+            }
+
+            break;
+        }
+        default:
+            break;
+        }
+    }
     return 0;
 }

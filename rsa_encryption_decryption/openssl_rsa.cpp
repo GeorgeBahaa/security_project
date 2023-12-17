@@ -13,16 +13,16 @@ namespace project
     namespace rsa_enc_dec
     {
         // Setter
-        void RSA_algorithm::setMessage(const std::string& newMessage)
+        void RSA_algorithm::setMessage(const std::string &newMessage)
         {
-            
+
             // Make sure to copy the string into the array
             std::strncpy(message, newMessage.c_str(), sizeof(message) - 1);
             message[sizeof(message) - 1] = '\0'; // Null-terminate the string
         }
 
         // Getter
-        const char* RSA_algorithm::getMessage()
+        const char *RSA_algorithm::getMessage()
         {
             return message;
         }
@@ -82,7 +82,7 @@ namespace project
             {
                 BIO_write(bio, decrypted, decrypt_length);
                 BIO_free(bio);
-                cout << "Decrypted file has been created." << endl;
+                // cout << "Decrypted file has been created." << endl;
             }
             else
             {
@@ -91,9 +91,73 @@ namespace project
             }
         }
 
+        void RSA_algorithm::encrypt(void)
+        {
+            /* for storing key pairs*/
+            RSA *private_key;
+            RSA *public_key;
+
+            /* pointers to ciphertext and decrypted text */
+            char *encrypt = nullptr;
+            char *decrypt = nullptr;
+
+            RSA *keypair = nullptr;
+            BIGNUM *bigNum = nullptr;
+            int status = 0;
+
+            char private_key_pem[12] = "private_key";
+            char public_key_pem[11] = "public_key";
+
+            RSA_algorithm *rsaAlgorithm;
+
+            cout << "Key size = " << KEY_SIZE << endl;
+            cout << "Public exponent = " << PUBLIC_EXPONENT << endl;
+            cout << endl;
+
+            bigNum = BN_new();
+            status = BN_set_word(bigNum, PUBLIC_EXPONENT);
+            if (status != 1)
+            {
+                cout << "An error occurred in BN_set_word() method" << endl;
+            }
+
+            keypair = RSA_new();
+            status = RSA_generate_key_ex(keypair, KEY_SIZE, bigNum, nullptr);
+            if (status != 1)
+            {
+                cout << ("An error occurred in RSA_generate_key_ex() method");
+            }
+            // cout << "key is generated" << endl;
+
+            private_key = rsaAlgorithm->create_RSA_BIO(keypair, PRIVATE_KEY_PEM, private_key_pem);
+            // cout << "private_key.txt file is created." << endl;
+
+            public_key = rsaAlgorithm->create_RSA_BIO(keypair, PUBLIC_KEY_PEM, public_key_pem);
+            // cout << "Public key pem file has been created." << endl;
+
+            encrypt = (char *)malloc(RSA_size(public_key));
+            int encrypt_length = rsaAlgorithm->public_encrypt(strlen(message) + 1, (unsigned char *)message,
+                                                              (unsigned char *)encrypt,
+                                                              public_key, RSA_PKCS1_OAEP_PADDING);
+            if (encrypt_length == -1)
+            {
+                cout << "An error occurred in public_encrypt() method" << endl;
+            }
+            rsaAlgorithm->create_encrypted_file_BIO(encrypt, public_key);
+            cout << "Data is encrypted successfully!" << endl;
+            cout << "encrypted_file.bin is saved in build directory! \n"
+                 << endl;
+            cout << endl;
+
+            cout << "RSA Encryption done successfully.\n"
+                 << endl;
+
+            return;
+        }
+
         void RSA_algorithm::run_algorithm(void)
         {
-            //cout << "starting RSA algorithm ... " << endl;
+            // cout << "starting RSA algorithm ... " << endl;
 
             /* for storing key pairs*/
             RSA *private_key;
@@ -112,8 +176,9 @@ namespace project
 
             RSA_algorithm *rsaAlgorithm;
 
-            cout << KEY_SIZE << endl;
-            cout << PUBLIC_EXPONENT << endl;
+            cout << "Key size = " << KEY_SIZE << endl;
+            cout << "Public exponent = " << PUBLIC_EXPONENT << endl;
+            cout << endl;
 
             bigNum = BN_new();
             status = BN_set_word(bigNum, PUBLIC_EXPONENT);
@@ -128,13 +193,13 @@ namespace project
             {
                 cout << ("An error occurred in RSA_generate_key_ex() method");
             }
-            //cout << "key is generated" << endl;
+            // cout << "key is generated" << endl;
 
             private_key = rsaAlgorithm->create_RSA_BIO(keypair, PRIVATE_KEY_PEM, private_key_pem);
-            //cout << "private_key.txt file is created." << endl;
+            // cout << "private_key.txt file is created." << endl;
 
             public_key = rsaAlgorithm->create_RSA_BIO(keypair, PUBLIC_KEY_PEM, public_key_pem);
-            //cout << "Public key pem file has been created." << endl;
+            // cout << "Public key pem file has been created." << endl;
 
             encrypt = (char *)malloc(RSA_size(public_key));
             int encrypt_length = rsaAlgorithm->public_encrypt(strlen(message) + 1, (unsigned char *)message,
@@ -144,10 +209,11 @@ namespace project
             {
                 cout << "An error occurred in public_encrypt() method" << endl;
             }
-            //cout << "Data is encrypted successfully!" << endl;
+            cout << "Data is encrypted successfully!" << endl;
 
             rsaAlgorithm->create_encrypted_file_BIO(encrypt, public_key);
-            //cout << "encrypted_file.bin is created " << endl;
+            cout << "encrypted_file.bin is saved in build directory! " << endl;
+            cout << endl;
 
             decrypt = (char *)malloc(encrypt_length);
             int decrypt_length = rsaAlgorithm->private_decrypt(encrypt_length, (unsigned char *)encrypt,
@@ -157,19 +223,15 @@ namespace project
             {
                 cout << "An error occurred in private_decrypt() method" << endl;
             }
-            //cout << "Data is decrypted successfully!" << endl;
+            cout << "Data is decrypted successfully!" << endl;
 
             rsaAlgorithm->create_decrypted_file_BIO(decrypt, decrypt_length);
-            //cout << "decrypted_file.txt is created" << endl;
+            cout << "decrypted_file.txt is saved in build directory!" << endl;
+            cout << endl;
 
-            std::cout << "RSA done successfully." << std::endl;
+            cout << "Public and Private keys files are saved in build directory!" << endl;
 
-            RSA_free(keypair);
-            free(private_key);
-            free(public_key);
-            free(encrypt);
-            free(decrypt);
-            BN_free(bigNum);
+            std::cout << "\nRSA Enc/Dec done successfully." << std::endl;
 
             return;
         }
