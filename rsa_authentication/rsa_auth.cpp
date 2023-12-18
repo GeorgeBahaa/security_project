@@ -279,7 +279,7 @@ namespace project
             saveBinaryFile(signature_path, signature);
 
             // Encrypt and decrypt using AES
-            std::string key = "0123456789abcdef"; // 128-bit key
+            std::string key = project::aes::generateKey();
             std::vector<unsigned char> ciphertext;
             project::aes::encrypt(appendedString, key, ciphertext);
 

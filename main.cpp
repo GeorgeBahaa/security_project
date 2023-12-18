@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
             {
             case 1:
             {
+                isvalid=true;
                 if (y == 1)
                 {
                     key = generateKey();
@@ -130,6 +131,7 @@ int main(int argc, char *argv[])
             }
             case 2:
             {
+                isvalid=true;
                 if (y == 1)
                 {
                     key = generateKey();
