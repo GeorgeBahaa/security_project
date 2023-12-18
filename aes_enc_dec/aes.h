@@ -21,10 +21,16 @@ namespace project
 
         void decrypt(const std::vector<unsigned char> &ciphertext, const std::string &key, std::vector<char> &decryptedtext);
 
-        void aes_go(std::string &plaintext);
+       
         void saveBinaryFile(const std::string &file_path, const std::string &data);
         std::string readBinaryFile(const std::string &path);
-        void aes_enc(std::string &plaintext);
+      
+        void addPadding(std::string &data);
+
+        std::string generateKey();
+        bool isValidKey(const std::string &key);
+        void aes_enc(std::string &plaintext, std::string &key);
+        void aes_go(std::string &plaintext, std::string &key);
 
     } // namespace aes
 } // namespace project

@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
         return 1; // Exit with an error code
     }
     int x;
-
+    int y;
+    bool isvalid=true;
+    std::string key;
     std::string file_path = argv[1];
     std::string message = read_message(file_path);
     std::cout << message << std::endl;
@@ -87,17 +89,70 @@ int main(int argc, char *argv[])
                 std::cout << std::endl;
             } while (x > 2 || x < 1);
 
+            std::cout << "\n[1] Generate key automatically\n"
+                      << "[2] Enter key manually\n\n"
+                      << std::endl;
+            do
+            {
+                std::cout << "Please choose operation \n";
+                std::cin >> y;
+                std::cout << std::endl;
+            } while (y > 2 || y < 1);
+
              switch (x)
             {
             case 1:
             {
-                aes_enc(message);
+                if (y == 1)
+                {
+                    key = generateKey();
+                    aes_enc(message,key);
+                }
+                else if(y==2)
+                {
+                    while(isvalid)
+                    {
+                    std::cout << "Please Enter valid key (128-bit key) \n";
+                    std::cin >> key;
+                    std::cout << std::endl;
+                    if(!isValidKey(key))
+                    {
+                        std::cout << "not valid key \n" << std::endl;
+                    }
+                    else{
+                        isvalid=false;
+                    }
+                    }
+
+                    aes_enc(message,key);
+                }
                 break;
             }
             case 2:
             {
-                aes_go(message);
-                break;
+                if (y == 1)
+                {
+                    key = generateKey();
+                    aes_go(message,key);
+                }
+                else if(y==2)
+                {
+                    while(isvalid)
+                    {
+                    std::cout << "Please Enter valid key (128-bit key) \n";
+                    std::cin >> key;
+                    std::cout << std::endl;
+                    if(!isValidKey(key))
+                    {
+                        std::cout << "not valid key \n" << std::endl;
+                    }
+                    else{
+                        isvalid=false;
+                    }
+                    }
+                    aes_go(message,key);
+                }
+                    break;
             }
             default:
                 break;
@@ -220,5 +275,5 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    return 0;
+
 }

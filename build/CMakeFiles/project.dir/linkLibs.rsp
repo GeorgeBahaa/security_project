@@ -1,0 +1,1 @@
+  -L"C:/PROGRA~1/OpenSSL-Win64/bin"  -llibssl-3-x64 -llibcrypto-3-x64 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

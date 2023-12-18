@@ -100,9 +100,32 @@ namespace project
             decryptedtext.resize(decryptedtext.size() - paddingSize);
         }
 
-        void aes_enc(std::string &plaintext)
+        std::string generateKey()
         {
-            std::string key = "0123456789abcdef"; // 128-bit key
+            const size_t keySize = 16; // 128 bits key size
+            std::string key;
+
+            srand(static_cast<unsigned int>(time(nullptr)));
+
+            // Generate a random key
+            for (size_t i = 0; i < keySize; ++i)
+            {
+                char randomByte = static_cast<char>(rand() % 256);
+                key.push_back(randomByte);
+            }
+
+            return key;
+        }
+
+        bool isValidKey(const std::string &key)
+        {
+            // AES-128 requires a 16-byte key
+            return (key.size() == 16);
+        }
+
+        void aes_enc(std::string &plaintext, std::string &key)
+        {
+            //std::string key = "0123456789abcdef"; // 128-bit key
 
             // Encryption
             std::vector<unsigned char> ciphertext;
@@ -121,11 +144,10 @@ namespace project
                  << endl;
         }
 
-        void aes_go(std::string &plaintext)
+        void aes_go(std::string &plaintext, std::string &key)
         {
 
-            std::string key = "0123456789abcdef"; // 128-bit key
-
+            //std::string key = "0123456789abcdef"; // 128-bit key
             // Encryption
             std::vector<unsigned char> ciphertext;
             project::aes::encrypt(plaintext, key, ciphertext);
@@ -137,13 +159,6 @@ namespace project
             saveBinaryFile(encrypted_path, cipherString);
             cout << "aes_encrypted.bin is saved in build directory! \n"
                  << endl;
-
-            // std::cout << "Ciphertext: ";
-            // for (const auto &byte : ciphertext)
-            // {
-            //     std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte);
-            // }
-            // std::cout << std::endl;
 
             std::string encString = readBinaryFile(encrypted_path);
             std::vector<unsigned char> readciphertext(encString.begin(), encString.end());
