@@ -107,11 +107,12 @@ namespace project
 
             srand(static_cast<unsigned int>(time(nullptr)));
 
-            // Generate a random key
+           const std::string allowedChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
             for (size_t i = 0; i < keySize; ++i)
             {
-                char randomByte = static_cast<char>(rand() % 256);
-                key.push_back(randomByte);
+                char randomChar = allowedChars[rand() % allowedChars.size()];
+                key.push_back(randomChar);
             }
 
             return key;
