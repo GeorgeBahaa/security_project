@@ -1,3 +1,0 @@
-G:/Semester 9/New folder/security_project/build/CMakeFiles/project.dir
-G:/Semester 9/New folder/security_project/build/CMakeFiles/edit_cache.dir
-G:/Semester 9/New folder/security_project/build/CMakeFiles/rebuild_cache.dir
