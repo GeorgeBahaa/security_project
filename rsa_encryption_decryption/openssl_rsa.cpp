@@ -149,7 +149,7 @@ namespace project
                  << endl;
             cout << endl;
 
-            cout << "Public and Private keys files are saved in build directory!" << endl;
+            cout << "Public and Private keys files are saved in build directory! \n" << endl;
 
             cout << "RSA Encryption done successfully.\n"
                  << endl;
